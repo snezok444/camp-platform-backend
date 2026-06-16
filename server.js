@@ -17,6 +17,9 @@ app.use(cors({
 
 // --- JSON парсер ---
 app.use(bodyParser.json());
+app.get("/", (req, res) => {
+    res.send("Backend is running");
+});
 // Авторизация
 function authRequired(req, res, next) {
     const auth = req.headers.authorization;
