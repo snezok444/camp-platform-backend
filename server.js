@@ -17,10 +17,11 @@ app.use(cors({
 
 // --- JSON парсер ---
 app.use(bodyParser.json());
+
+// --- ОБЯЗАТЕЛЬНО: маршрут корня ---
 app.get("/", (req, res) => {
     res.send("Backend is running");
 });
-// Авторизация
 function authRequired(req, res, next) {
     const auth = req.headers.authorization;
     if (!auth) return res.status(401).json({ error: "No token" });
@@ -336,5 +337,7 @@ app.get("/leaderboard/users", authRequired, (req, res) => {
     );
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log("Backend running on port", PORT));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
+});
