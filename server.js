@@ -8,6 +8,9 @@ const app = express();
 const db = new sqlite3.Database("database.db");
 const JWT_SECRET = "supersecret";
 
+const cors = require("cors");
+app.use(cors());
+
 app.use(cors());
 app.use(bodyParser.json());
 
