@@ -11,7 +11,6 @@ const JWT_SECRET = "supersecret";
 const cors = require("cors");
 app.use(cors());
 
-app.use(cors());
 app.use(bodyParser.json());
 
 // Инициализация БД
