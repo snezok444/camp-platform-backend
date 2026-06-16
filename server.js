@@ -8,52 +8,15 @@ const app = express();
 const db = new sqlite3.Database("database.db");
 const JWT_SECRET = "supersecret";
 
-const cors = require("cors");
-app.use(cors());
+// --- CORS НАСТРОЙКА ДЛЯ VERCEL ---
+app.use(cors({
+    origin: "https://camp-frontend-nine.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
+// --- JSON парсер ---
 app.use(bodyParser.json());
-
-// Инициализация БД
-db.serialize(() => {
-    db.run(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            login TEXT UNIQUE,
-            password_hash TEXT,
-            role TEXT NOT NULL DEFAULT 'child',
-            team_id INTEGER,
-            room_id INTEGER,
-            coins INTEGER NOT NULL DEFAULT 0
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS teams (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
-        )
-    `);
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS rooms (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            number TEXT NOT NULL,
-            cleanliness_rating INTEGER NOT NULL DEFAULT 0
-        )
-    `);
-
-    db.get("SELECT * FROM users WHERE login = 'admin'", (err, row) => {
-        if (!row) {
-            db.run(
-                "INSERT INTO users (name, login, password_hash, role, coins) VALUES (?, ?, ?, ?, ?)",
-                ["Администратор", "admin", "admin123", "admin", 0]
-            );
-            console.log("Admin created: admin / admin123");
-        }
-    });
-});
-
 // Авторизация
 function authRequired(req, res, next) {
     const auth = req.headers.authorization;
